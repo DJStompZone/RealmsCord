@@ -239,6 +239,7 @@ interface EventValues {
 
 export interface Player {
   getName(): string
+  toString(): string
   getNameTag(): string
   getRealmID(): number
   getUUID(): string 

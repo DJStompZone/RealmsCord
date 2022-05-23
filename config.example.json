@@ -1,0 +1,16 @@
+{
+	"clientId": "000000000000000000",
+	"guildId": "000000000000000000",
+	"channelId": "000000000000000000",
+	"token": "1vOID_rEaLMsC0rD-ExaMPLe_DiSCoRDToKEN_r4Nd0m_69y0l0420-nICe",
+	"realmName": "YourRealmNameHere",
+	"realmId": 00000000,
+	"botName": "YourBotNameHere",
+	"accountEmail": "XboxLiveAccountForYourBot@outlook.com",
+	"verboseMessageEvents": true,
+	"attemptAutoConnect": true,
+	"crossTalk": false,
+	"ownerDiscordID": "000000000000000000",
+	"xToDMap": {},
+	"picMap": {}
+}

@@ -1,0 +1,5 @@
+config.json
+moreconfig.json
+package-lock.json
+.git
+.env
