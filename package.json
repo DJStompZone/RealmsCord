@@ -2,7 +2,7 @@
   "name": "realmscord",
   "displayName": "RealmsCord",
   "color": "#adf542",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Chat connectivity between Discord and Minecraft Bedrock Realms.",
   "devMode": true,
   "main": "dist/index.js",
