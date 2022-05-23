@@ -5,7 +5,7 @@
       "declaration": false,
       "outDir": "dist",
       "baseUrl": ".",
-      "target": "es2020",
+      "target": "es2021",
       "strictNullChecks": false,
       "rootDir": "src",
       "moduleResolution": "node",
@@ -19,5 +19,8 @@
     "exclude": [
       "node_modules",
       "dist"
+    ],
+	"lib": [
+      "ES2021.String"
     ],
   }
