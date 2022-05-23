@@ -204,12 +204,18 @@ class DiscBot {
         this.api.getEventManager().on("PlayerMessage", async (packet) => {
 		    if (verboseMessageEvents) {
 				this.api.getLogger().info("Received new message event from the Realms client:");
-				this.api.getLogger().info(`   "${packet.message}"`);
+				this.api.getLogger().info(`Message:   "${packet.message}"`);
+			}
+			let playerMessage = ""
+			if (packet.sender) {
+				playerMessage += `__[${realmName}]__ **${packet.sender.toString()}:** ${packet.message}`
+			} else {
+				playerMessage += `__[${realmName}]__ *${packet.message.substr(2)}*`
 			}
             await client.channels
                 .fetch(channelId)
                 .then((channel) => channel
-					.send(`__[${realmName}]__ **${packet.sender.getName()}:** ${packet.message}`))
+					.send(playerMessage))
                 .catch((error) => {
 					this.api.getLogger().error(error);
 				});
