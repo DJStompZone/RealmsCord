@@ -95,7 +95,7 @@ class DiscBot {
 			    this.api.autoReconnect(accountEmail, realmId)
 			}
 			catch(anotherError) {
-			    this.api.getLogger().error("AuReconnect failed. Skipping...", anotherError)
+			    this.api.getLogger().error("AutoReconnect failed. Skipping...", anotherError)
 			}
         }
     }
@@ -114,7 +114,9 @@ class DiscBot {
 			const fancyStartMSG = new MessageEmbed()
 				.setColor("#139dbf")
 				.setDescription(`**${realmName}'s chat has been bridged with Discord**`)
-				.setImage("https://i.imgur.com/5ygik4I.png");
+				.setImage("https://i.imgur.com/Ncx9FFE.png")
+			        .setAuthor(`${botName}`, 'https://i.imgur.com/5ygik4I.png', 'https://discord.io/stomp')
+			        .setFooter({ text: 'RealmsCord | StompZone', iconURL: 'https://i.imgur.com/UvGRE2C.gif' });
 			client.channels.fetch(channelId)
 				.then(async (channel) => await channel.send({ embeds: [fancyStartMSG] })
 				.then(msg => {setTimeout(() => msg.delete(), 30000)})
@@ -140,7 +142,8 @@ class DiscBot {
 				.addStringOption(option =>
 		            option.setName('input')
 			        .setDescription('The command to send to the realm')
-			        .setRequired(true)).toJSON())
+			        .setRequired(true)).toJSON());
+			client.channels.fetch(channelId)
 			const rest = new REST({ version: "9" }).setToken(token);
 			async () => {
 				try {
@@ -186,6 +189,7 @@ class DiscBot {
 		}})
         client.on("messageCreate", (message) => {
 			if (crosstalk?(message.author.id===clientId):(message.author.bot)) {return}
+			if (message.content === ""){return}
             if (message.channel.id == channelId) {
 			    let hasCor = checkCorrelation(parseInt(`${message.author.id}`), false)
 				let msgauthor = `${message.author.username}`
@@ -227,7 +231,9 @@ class DiscBot {
                 .setColor("#00ff00")
 				.setTitle("__Player connected!__")
                 .setDescription(`${joinStr}\nXUID: [${eventXuid}]\nDevice: ${userJoin.getDevice()}`)
-				.setImage(getSavedPic(eventXuid));
+				.setImage(getSavedPic(eventXuid))
+	    			.setFooter({ text: 'RealmsCord | StompZone', iconURL: 'https://i.imgur.com/UvGRE2C.gif' });
+			client.channels.fetch(channelId);
             return client.channels
                 .fetch(channelId)
                 .then(async (channel) => await channel.send({ 
@@ -250,16 +256,21 @@ class DiscBot {
             const fancyDiedMSG = new MessageEmbed()
 				.setColor("#ff0000")
 				.setTitle("**Oof!**")
-				.setDescription(obituary);
+				.setDescription("    ")
+	    			.setImage("https://i.imgur.com/ohDDTyv.png")
+	    			.setFooter({ text: 'RealmsCord | StompZone', iconURL: 'https://i.imgur.com/UvGRE2C.gif' });
+			client.channels.fetch(channelId);
             return client.channels.fetch(channelId)
-			.then(async (channel) => await channel.send({ content: '  ', embeds: [fancyDiedMSG] }))
+			.then(async (channel) => await channel.send({ content: `${obituary}`, embeds: [fancyDiedMSG] }))
             .catch((error) => {this.api.getLogger().error(error)});
 		});
 		
         this.api.getEventManager().on("PlayerLeft", async (userLeave) => {
             const fancyLeaveMSG = new MessageEmbed()
                 .setColor("#9d3838")
-                .setDescription(`**${userLeave.getName()}** has left the realm.`);
+                .setDescription("    ")
+	        .setTitle("Player left")
+	        .setFooter({ text: 'RealmsCord | StompZone', iconURL: 'https://i.imgur.com/UvGRE2C.gif' });
             return client.channels
                 .fetch(channelId)
                 .then(async (channel) => await channel.send({
@@ -273,7 +284,9 @@ class DiscBot {
         client.on("interactionCreate", async (interaction) => {
             if (!interaction.isCommand())
                 return;
+	    await interaction.deferReply();
             const { commandName } = interaction;
+	    let cmdResponse = ''
             if (commandName === "list") {
                 let response = `/10 Players Online**:`;
                 let players = [];
@@ -285,14 +298,13 @@ class DiscBot {
                 const fancyResponse = new MessageEmbed()
                     .setColor("#5a0cc0")
                     .setTitle(`${realmName}`)
-                    .setDescription(`**${players.length + 1}${response}`);
-                await interaction
-                    .reply({ embeds: [fancyResponse] })
+                    .setDescription(`**${players.length + 1}${response}`)
+		    .setFooter({ text: 'RealmsCord | StompZone', iconURL: 'https://i.imgur.com/UvGRE2C.gif' });
+                await interaction.editReply({ content: "${interaction.user.username} used /list", embeds: [fancyResponse] })
                     .catch((error) => {
 						this.api.getLogger().error(error);
                 });
             } else if (commandName === "sendcmd") {
-			    let cmdResponse = ''
                 if (interaction.user.id == ownerDiscordID) {
 				    try {
 				        this.api.getCommandManager().executeCommand(interaction.options.getString('input'))
@@ -301,8 +313,7 @@ class DiscBot {
 		                console.error("Error executing command: ", error);
 						cmdResponse = "Command execution failed."
 	                }
-                await interaction
-                    .reply({ content: cmdResponse })
+                await interaction.editReply({ content: cmdResponse })
                     .catch((error) => {
 						this.api.getLogger().error(error);
                 });
